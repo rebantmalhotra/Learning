@@ -1,0 +1,16 @@
+polls <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-14/polls.csv')
+rankings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-14/rankings.csv')
+
+View(rankings)
+library(tidyverse)
+library(dplyr)
+library(Cairo)
+library(ggrepel)
+
+ggplot(rankings, aes(year, points)) + geom_point(alpha = 0.7, color = ft_cols$yellow, size = 2) + theme_ft_rc() + 
+  geom_text_repel(aes(label = title), data = subset(rankings, (points > 40 | (points > 15 & year >= 2010))), color = "grey", size = 3) + 
+  annotate(geom = "curve", color = "grey", x = 2012, y = 58, xend = 2015, yend = 27, curvature = -0.3, arrow = arrow(length = unit(2, "mm"))) + 
+  annotate(geom = "text", x = 2010, y = 61, label = "Kendrick Lamar: The Shining Beacon", color = "grey", size = 3, fontface = "bold") + 
+  labs(x = "", y= "Total points awarded by critics", title = "The Best of Rap: 1979-2019", subtitle = "Has rap declined in the 21st Century?", caption = "By @RebantMalhotra | Source: #TidyTuesday | BBC")
+
+ggsave("rap1.png", width = 6, height = 6, dpi = 600, type = "cairo")
