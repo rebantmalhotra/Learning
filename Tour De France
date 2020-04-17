@@ -1,0 +1,30 @@
+tdf_winners <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-07/tdf_winners.csv')
+View(tdf_winners)
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(dplyr)
+
+View(tdf_winners)
+
+tdf_winners %>%
+  mutate(year = year(start_date)) %>%
+  mutate(speed = distance/time_overall) %>%
+  filter(year > 1919) %>%
+  ggplot(aes(year, speed)) + geom_line(size = 1.2) + theme_fivethirtyeight() + geom_point(alpha = 0.5, size = 1.5) + 
+  labs(x = "", y ="Speed (KM/H)", title = "Tour de France cyclists have become faster over the years", caption = "By @rebantmalhotra | Source: #TidyTuesday", subtitle = "Better training, gear, nutrition (& PEDs) has aided the efforts") +
+  annotate(geom = "curve", x = 1960, y = 40, xend = 1997.5, yend = 41.7, curvature = 0.3, arrow = arrow(length = unit(2, "mm"))) + 
+  annotate(geom = "label", x = 1943, y = 40.5, label = "Marco Pantani cycled 3875 kms in just 92 hours", hjust = "left") + 
+  annotate(geom = "curve", x = 1942, y = 30, xend = 1942, yend = 31.5, curvature = 0.3, arrow = arrow(length = unit(2, "mm"))) + 
+  annotate(geom = "label", x = 1942, y = 29.5, label = "No races due to World War 2: 1939-45", hjust = "left") + 
+  annotate(geom = "point", x = 1999, y = 40.2, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 2005, y = 41.65770, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 2000, y = 39.56685, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 2001, y = 40.07365, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 2002, y = 39.86031, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 2003, y = 40.95037, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 2004, y = 40.56193, colour = "orange", size = 2.5) + 
+  annotate(geom = "point", x = 1981, y = 26, colour = "orange", size = 3) + #Legend for Lance 
+  annotate(geom = "label", x = 1982, y = 26, label = "Lance Armstrong's hot streak (1999-2005)", hjust = "left")
+
+ggsave("tourdefrance2.pdf", width = 9, height = 7, dpi = 300)
