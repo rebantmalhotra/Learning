@@ -1,0 +1,41 @@
+emperors <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-08-13/emperors.csv")
+
+View(emperors)
+devtools::install_github('bbc/bbplot')
+library(tidyverse)
+library(ggthemes)
+library(bbplot)
+library(lubridate)
+
+
+emperors %>%
+  filter(name != "Augustus") %>%
+  select(name, reign_start, reign_end) %>%
+  mutate(syear = year(reign_start)) %>%
+  mutate(eyear = year(reign_end)) %>%
+  mutate("reign" = eyear - syear) %>%
+  mutate(id = row_number()) %>%
+  head(15) %>%
+  view() %>%
+  ggplot(aes(syear, xend = eyear, y = reorder(name, -id))) +  geom_dumbbell(colour = "#dddddd",
+                                                              size = 3,
+                                                              colour_x = "#FAAB18",
+                                                              colour_xend = "#1380A1") + bbc_style() + 
+  labs(title="When & how long did they rule", subtitle = "The 15 Roman Emperors who followed Augustus Caesar") + geom_label(aes(x = 85, y = "Vitellius", label = "Five new emperors within a year (68-69AD)"), 
+                                                                                                                                 hjust = 0, 
+                                                                                                                                 vjust = 0.5, 
+                                                                                                                                 colour = "#555555", 
+                                                                                                                                 fill = "white", 
+                                                                                                                                 label.size = NA, 
+                                                                                                                                 family="Helvetica", 
+                                                                                                                                 size = 6) + geom_label(aes(x = 85, y = "Vespasian", label = "due to suicide, illness & assassinations"), 
+                                                                                                                                                        hjust = 0, 
+                                                                                                                                                        vjust = 0.5, 
+                                                                                                                                                        colour = "#555555", 
+                                                                                                                                                        fill = "white", 
+                                                                                                                                                        label.size = NA, 
+                                                                                                                                                        family="Helvetica", 
+                                                                                                                                                        size = 6) + 
+  theme(axis.title = element_text(size = 18), plot.caption = element_text(color = "#696969", size = 10, hjust = 1)) + xlab("Year (in AD)") + ylab("") + labs(caption = "By @rebantmalhotra | Source: Wikipedia / TidyTuesday")
+
+ggsave(filename = "rome1.pdf", height = 7 , width = 11, , dpi = 300)
