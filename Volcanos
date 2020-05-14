@@ -1,0 +1,24 @@
+library(tidyverse)
+volcano <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+eruptions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/eruptions.csv')
+
+View(volcano)
+
+
+volcano %>%
+  count(region) %>%
+  View()
+
+
+volcano %>%
+  ggplot(aes(elevation, region, fill = region)) + 
+  geom_density_ridges(rel_min_height = 0.01) +
+  theme_ridges() + 
+  labs(x = "ELEVATION(M)", y = "REGION") + 
+  theme(legend.position = "none",
+        axis.text.x = element_text(size=10),
+        axis.text.y = element_text(size=10),
+        plot.title = element_text(size=16, face="bold"), plot.caption = element_text(color = "grey")) + 
+  ggtitle("Volcano distribution across regions by elevation", subtitle = "Negative elevation shows submarine volcanos") + 
+  labs(caption = "By @RebantMalhotra | Source: TidyTuesday - Smithsonian")
+ggsave("volcano.pdf", width = 9, height = 8, dpi = 320)
