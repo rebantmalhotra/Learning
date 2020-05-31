@@ -1,0 +1,31 @@
+# Load Packages  ----------------------------------------------------------
+
+library(tidyverse)
+library(ggplot2)
+
+
+# Dataset -----------------------------------------------------------------
+
+attendance <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/attendance.csv')
+
+
+
+# View Dataset ------------------------------------------------------------
+
+View(attendance)
+
+
+# Analysis & Code ---------------------------------------------------------
+
+attendance %>%
+  filter(year == "2019") %>%
+  ggplot(aes(week, weekly_attendance)) + geom_line() + facet_wrap(~ team_name, ncol = 4) + theme_ft_rc() + 
+  scale_x_continuous(breaks = c(3,6,9,12,15)) + 
+  xlab("WEEK") + ylab("ATTENDANCE") + 
+  ggtitle("Weekly attendance figures for NFL teams for 2019", subtitle = "Gap indicates no game") + 
+  labs(caption = "By @rebantmalhotra | Source: Pro Football Reference")
+
+# Saving the viz ----------------------------------------------------------
+
+
+ggsave("Attendance.png", width = 8, height = 13, dpi = 300)
