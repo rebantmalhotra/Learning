@@ -1,0 +1,22 @@
+library(tidyverse)
+library(reshape2)
+library(ggthemes)
+library(hrbrthemes)
+library(waffle)
+
+
+hello <- melt(SCA, id.vars=c("Squad"))
+View(hello)
+
+hello %>%
+  ggplot(aes(fill = variable, values = value)) + 
+  geom_waffle(color = "white", size = .5, n_rows = 10, flip = TRUE) + 
+  facet_wrap(~ Squad, nrow = 4, strip.position = "bottom") + 
+  scale_x_discrete() + 
+  ggthemes::scale_fill_tableau(name=NULL) +
+  coord_equal() +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), axis.text.y = element_blank()) +
+  guides(fill = guide_legend(reverse = TRUE)) 
+  
+ggsave("GCreate.png", height = 10, width = 10, dpi = 300)
