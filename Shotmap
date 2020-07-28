@@ -1,0 +1,35 @@
+library(tidyverse)
+library(understatr)
+library(ggthemes)
+library(hrbrthemes)
+library(ggsoccer)
+library(gghighlight)
+library(Cairo)
+hello <- get_match_shots(match_id = 12006)
+import_roboto_condensed()
+View(hello)
+
+options(digits=2)
+
+h_a.labs <- c("Liverpool", "Chelsea")
+names(h_a.labs) <- c("h", "a")
+
+
+hello %>%
+  mutate(xaxis = X*100) %>%
+  mutate(yaxis = Y*100) %>% 
+  mutate(Result = result) %>%
+  ggplot(aes(xaxis, yaxis, color = Result, size = xG)) + scale_colour_manual(values = c("firebrick", "midnightblue", "gray4", "burlywood4", "yellow")) + 
+  annotate_pitch(colour = "white",
+                 fill   = "#7fc47f",
+                 limits = FALSE) + scale_size(range = c(1,6)) + 
+  geom_point(aes(x = xaxis , y = 100 - yaxis), alpha = 0.6) +
+  theme_pitch() + 
+  coord_flip(xlim = c(49, 101),
+             ylim = c(0, 100)) + facet_wrap(~ h_a, ncol = 2, labeller = labeller(h_a = h_a.labs)) + 
+  ggtitle("Liverpool 5 - 3 Chelsea", subtitle ="Is Salah still a viable option for GW 38?") + theme_fivethirtyeight() + 
+  theme(axis.line=element_blank(),axis.text.x=element_blank(),  axis.text.y=element_blank(),axis.ticks=element_blank(),
+        panel.background=element_blank(),panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(), text = element_text(family = "Roboto Condensed", size = 12), 
+        plot.title = element_text(size = 15)) + labs(caption = "By Rebant Malhotra // Source: Understat")
